@@ -7,14 +7,14 @@ import yaml
 
 def load_data(data_url: str) -> pd.DataFrame:
     try:
-        df=pd.read_csv(data_url)
+        df = pd.read_csv(data_url)
         return df
     except pd.errors.ParserError as e:
         print(f"Error: Failed to parse the csv file from {data_url}.")
         print(e)
         raise
     except Exception as e:
-        print(f"Error: An unexpected error occured while loading the data.")
+        print(f"Error: An unexpected error occurred while loading the data.")
         print(e)
         raise
 
@@ -23,7 +23,8 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     try:
         df.drop(columns=['tweet_id'], inplace=True)
         final_df = df[df['sentiment'].isin(['happiness', 'sadness'])]
-        final_df['sentiment'].replace({'happiness': 1, 'sadness': 0}, inplace=True)
+        # Avoid using inplace=True and replace directly
+        final_df['sentiment'] = final_df['sentiment'].replace({'happiness': 1, 'sadness': 0})
         return final_df
     except KeyError as e:
         print(f"Error: Missing column {e} in the dataframe.")
@@ -33,7 +34,7 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
         print(e)
         raise
     
-    
+
 def save_data(train_data: pd.DataFrame, test_data: pd.DataFrame, data_path: str) -> None:
     try:
         data_path = os.path.join(data_path, 'raw')
@@ -44,7 +45,7 @@ def save_data(train_data: pd.DataFrame, test_data: pd.DataFrame, data_path: str)
         print(f"Error: An unexpected error occurred while saving the data.")
         print(e)
         raise
-    
+     
 
 def main():
     try:
@@ -58,4 +59,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
+
